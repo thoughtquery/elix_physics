@@ -1,4 +1,4 @@
-defmodule Physics.Planet do
+defmodule Physics.Rocketry do
 @moduledoc """
            g    = Gravitational Constant
            gmr  = Grav Const, Mass, Radius
@@ -7,27 +7,27 @@ defmodule Physics.Planet do
            """
            
 
-  defstruct [
-    name: "Earth",
-    radius_m: 6.371e6,
-    mass_kg:  5.97e24
-]
 
 
-  def escape_velocity do
-    g    = 6.67e-11
-    gmr  = 2 * g * planet.mass_kg/planet.radius_m
-    vms  = :math.sqrt(gmr)
-    vkms = vms/1000
-    Float.ceil(vkms,1) 
+  def escape_velocity(planet) when is_map(planet) do
+    planet 
+      |> calculate_escape
+      |> convert_to_km
+      |> round_to_nearest_tenth
   end
 
-end
+  defp rounded_to_nearest_tenth(val) do
+   Float.ceil(val,1)
+  end
 
-v = %Physics.Planet{} |> Physics.Planet.escape_velocity 
+  defp convert_to_km(val) do
+    val / 1000
+  end
 
-defmodule Physics.Rocketry do
-
-
+  defp calculate_escape(%{mass: mass, radius: radius}) do
+    newtons_constant = 6.67e-11
+    2 * newtons_constant * mass / radius
+      |> :math.sqrt
+  end
 end
 
